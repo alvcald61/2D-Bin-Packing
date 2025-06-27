@@ -89,7 +89,7 @@ public class RecreateBinsClient {
 				piecesInThisBin.add(piece);
 				piecesMap.remove(line.id);
 			}
-			Utils.drawMAreasToFile(piecesInThisBin, viewPortDimension, binDimension, (OUTPUT + bin.name));
+//			Utils.drawMAreasToFile(piecesInThisBin, viewPortDimension, binDimension, (OUTPUT + bin.name));
 		}
 		if (!piecesMap.isEmpty()) {
 			throw new Exception("Some pieces where not present in the bin output files");

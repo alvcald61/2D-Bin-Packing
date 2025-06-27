@@ -23,6 +23,7 @@ public class MArea extends Area {
 	 * Accumulate rotation in degrees of this MArea
 	 */
 	private double rotation;
+	private String type;
 
 	/**
 	 * Creates an MArea based on a Path2D previously constructed
@@ -132,6 +133,14 @@ public class MArea extends Area {
 		rotation = 0;
 	}
 
+	public MArea(MPointDouble[] points, int ID, String type) {
+		super(Utils.createShape(points));
+		this.ID = ID;
+		computeArea();
+		rotation = 0;
+		this.type = type;
+	}
+
 	/**
 	 * Returns the area of this area using algorithm found at:
 	 * http://paulbourke.net/geometry/polygonmesh/source1.c At the same time,
@@ -237,8 +246,11 @@ public class MArea extends Area {
 		double yFactor = viewPortDimension.getHeight() / binDimension.getHeight();
 		AffineTransform transform = new AffineTransform();
 		transform.scale(xFactor, yFactor);
-		transform.translate(11, 11);
+		transform.translate(10, 10);
 		Area newArea = this.createTransformedArea(transform);
+		// Add 20 to x and y to avoid drawing in the corner
+//		newArea.transform(AffineTransform.getTranslateInstance(0.1*1000, 0));
+//
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.BLACK);
 		g2d.setStroke(new BasicStroke(2));
@@ -429,5 +441,13 @@ public class MArea extends Area {
 			}
 			return 0;
 		}
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

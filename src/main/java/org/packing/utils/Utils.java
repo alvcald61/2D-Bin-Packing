@@ -7,6 +7,7 @@ import org.packing.primitives.MPointDouble;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
@@ -94,20 +95,36 @@ public class Utils {
 	 * @see IOException
 	 */
 	public static void drawMAreasToFile(ArrayList<MArea> pieces, Dimension viewPortDimension, Dimension binDimension, String name) throws IOException {
-		BufferedImage img = new BufferedImage(viewPortDimension.width + 20, viewPortDimension.height + 20, BufferedImage.TYPE_INT_RGB);
+		BufferedImage img = new BufferedImage(viewPortDimension.width, viewPortDimension.height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = img.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.darkGray);
 		g2d.fillRect(0, 0, viewPortDimension.width + 20, (int) viewPortDimension.height + 20);
 		g2d.setColor(Color.WHITE);
-		g2d.fillRect(10, 10, viewPortDimension.width, viewPortDimension.height);
+		g2d.fillRect(0, 0, viewPortDimension.width + 20, viewPortDimension.height + 20);
+//		g2d.fillRect(0, 0, viewPortDimension.width + 20, viewPortDimension.height + 20);
 		g2d.setColor(Color.BLACK);
 		for (int i = 0; i < pieces.size(); i++) {
 			pieces.get(i).drawInViewPort(binDimension, viewPortDimension, g2d);
 		}
+		drwaBinBorder(g2d, binDimension, viewPortDimension);
 		File outputfile = new File(name + ".png");
 		img = flipAroundX(img);
 		ImageIO.write(img, "png", outputfile);
+	}
+
+	private static void drwaBinBorder(Graphics2D g2d, Dimension binDimension,
+					Dimension viewPortDimension) {
+		double xFactor = viewPortDimension.getWidth() / binDimension.getWidth();
+		double yFactor = viewPortDimension.getHeight() / binDimension.getHeight();
+		AffineTransform transform = new AffineTransform();
+		transform.scale(xFactor, yFactor);
+		transform.translate(10, 10);
+		Area a = new Area(new Rectangle2D.Double(0, 0, binDimension.getWidth(), binDimension.getHeight()));
+		a.transform(transform);
+		g2d.setColor(Color.BLUE);
+		g2d.setStroke(new BasicStroke(2));
+		g2d.draw(a);
 	}
 
 	/**
